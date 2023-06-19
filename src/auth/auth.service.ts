@@ -18,7 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  // register user to database
+  // -----------------register user to database-------------------
   async register(dto: AuthDto): Promise<TokenType> {
     const { email, password, username, name } = dto;
 
@@ -50,6 +50,7 @@ export class AuthService {
     };
   }
 
+  // -----------------login user -----------------------------
   async login(dto: LoginDto): Promise<TokenType> {
     const { username, password } = dto;
     const user = await this.prisma.user.findUnique({
@@ -70,6 +71,48 @@ export class AuthService {
 
     return tokens;
   }
+
+  //------------------logout---------------------------------
+  async logout(userId: number): Promise<void> {
+    await this.prisma.user.updateMany({
+      where: {
+        id: userId,
+        refreshToken: {
+          not: null,
+        },
+      },
+      data: {
+        refreshToken: null,
+      },
+    });
+  }
+
+  //------------------refresh---------------------------------
+  async refresh(userId: number, refreshToken: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+    if (!user || !user.password) throw new ForbiddenException('Access denied');
+
+    const isMatch = await bcrypt.compare(refreshToken, user.refreshToken);
+    if (!isMatch) throw new ForbiddenException('Access denied');
+
+    const { access_token, refresh_token } = await this.generateToken(
+      user.id,
+      user.email,
+      user.username,
+    );
+    await this.storeHashedRT(user.id, refresh_token);
+
+    return {
+      access_token,
+      refresh_token,
+    };
+  }
+
+  //------------------helpers---------------------------------
 
   // generate refresh and access token
   async generateToken(
