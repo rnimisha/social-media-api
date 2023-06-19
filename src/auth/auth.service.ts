@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AuthDto } from './dto';
+import { AuthDto, LoginDto } from './dto';
 import * as bcrypt from 'bcrypt';
 import { TokenType } from './types';
 import { JwtService } from '@nestjs/jwt';
@@ -19,7 +23,6 @@ export class AuthService {
     const { email, password, username, name } = dto;
 
     const hash = await bcrypt.hash(password, 10);
-
     const newUser = await this.prisma.user.create({
       data: {
         email,
@@ -39,13 +42,33 @@ export class AuthService {
       newUser.email,
       newUser.username,
     );
-
     await this.storeHashedRT(newUser.id, refresh_token);
 
     return {
       access_token,
       refresh_token,
     };
+  }
+
+  async login(dto: LoginDto): Promise<TokenType> {
+    const { username, password } = dto;
+    const user = await this.prisma.user.findUnique({
+      where: {
+        username: username,
+      },
+    });
+
+    if (!user) throw new NotFoundException('User is not registered');
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordMatch)
+      throw new ForbiddenException('Password does not match');
+
+    const tokens = await this.generateToken(user.id, user.email, user.username);
+    await this.storeHashedRT(user.id, tokens.refresh_token);
+
+    return tokens;
   }
 
   // generate refresh and access token
