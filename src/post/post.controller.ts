@@ -44,13 +44,10 @@ export class PostController {
     return this.postService.addNewPost(userId, body, filenames);
   }
 
-  @Put()
-  updatePostById() {
-    return this.postService.updatePostById();
-  }
-
-  @Delete()
-  deleteSinglePostById() {
-    return this.postService.deleteSinglePostById();
+  @Delete(':id')
+  deleteSinglePostById(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<{ id: number }> {
+    return this.postService.deleteSinglePostById(id);
   }
 }

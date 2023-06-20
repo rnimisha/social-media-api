@@ -36,7 +36,7 @@ model Post {
   createdAt DateTime @default(now())
 
   userId Int
-  author User @relation(fields: [userId], references: [id])
+  author User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   images PostImage[]
   likes Like[]
@@ -47,15 +47,15 @@ model PostImage {
   basename String
 
   postId Int
-  post Post @relation(fields: [postId], references: [id])
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
 
 model Like{
   id Int @id @default(autoincrement())
 
   userId Int
-  likedBy User @relation(fields: [userId], references: [id])
+  likedBy User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   postId Int
-  postLiked Post @relation(fields: [postId], references: [id])
+  postLiked Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }
