@@ -6,7 +6,6 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  Put,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -23,14 +22,16 @@ import { PostType } from './types/post.types';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @Get()
-  getAllPost(): Promise<PostType[]> {
-    return this.postService.getAllPost();
+  @Get(':username')
+  getAllUserPost(@Param('username') username: string): Promise<PostType[]> {
+    return this.postService.getAllUserPost(username);
   }
 
-  @Get(':id')
-  getPostById(@Param('id', ParseIntPipe) id: number): Promise<PostType> {
-    return this.postService.getPostById(id);
+  @Get(':username/:postid')
+  getPostByPostId(
+    @Param('postid', ParseIntPipe) postid: number,
+  ): Promise<PostType> {
+    return this.postService.getPostByPostId(postid);
   }
 
   @Post()
@@ -44,10 +45,10 @@ export class PostController {
     return this.postService.addNewPost(userId, body, filenames);
   }
 
-  @Delete(':id')
+  @Delete(':username/:postid')
   deleteSinglePostById(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('postid', ParseIntPipe) postid: number,
   ): Promise<{ id: number }> {
-    return this.postService.deleteSinglePostById(id);
+    return this.postService.deleteSinglePostById(postid);
   }
 }

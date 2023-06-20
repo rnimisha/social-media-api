@@ -27,6 +27,20 @@ model User {
 
   posts Post[] 
   likedPosts Like[]
+  comments Comment[]
+
+  followers Follow[]  @relation("FollowerUser")
+  followings Follow[]  @relation("FollowingUser")
+}
+
+model Follow{
+  id Int @id @default(autoincrement())
+
+  followerId Int
+  followerUser User @relation("FollowerUser", fields: [followerId], references: [id], onDelete: Cascade)
+
+  followingId Int
+  followingUser User @relation("FollowingUser", fields: [followingId], references: [id], onDelete: Cascade)
 }
 
 model Post {
@@ -40,6 +54,8 @@ model Post {
 
   images PostImage[]
   likes Like[]
+  comments Comment[]
+
 }
 
 model PostImage {
@@ -48,6 +64,7 @@ model PostImage {
 
   postId Int
   post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
 }
 
 model Like{
@@ -58,4 +75,16 @@ model Like{
 
   postId Int
   postLiked Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id           Int         @id @default(autoincrement())
+  description  String
+  createdAt    DateTime    @default(now())
+
+  userId Int
+  commentBy User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  postId Int
+  post Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }

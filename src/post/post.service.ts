@@ -8,9 +8,17 @@ import { PostType } from './types/post.types';
 export class PostService {
   constructor(private readonly prisma: PrismaService) {}
 
-  //----------------- Get All Post--------------------------
-  async getAllPost(): Promise<PostType[]> {
+  //----------------- Get All Post of the user--------------------------
+  async getAllUserPost(username: string): Promise<PostType[]> {
     const posts = await this.prisma.post.findMany({
+      where: {
+        author: {
+          username: {
+            equals: username,
+            mode: 'insensitive',
+          },
+        },
+      },
       include: {
         images: true,
         likes: true,
@@ -19,7 +27,8 @@ export class PostService {
     return posts;
   }
 
-  async getPostById(postId: number): Promise<PostType> {
+  //----------------- Get single post--------------------------
+  async getPostByPostId(postId: number): Promise<PostType> {
     const post = await this.prisma.post.findFirst({
       where: {
         id: postId,
@@ -56,6 +65,7 @@ export class PostService {
     return newPost;
   }
 
+  //----------------- Create Single post--------------------------
   async deleteSinglePostById(postId: number): Promise<{ id: number }> {
     const findPost = await this.prisma.post.findFirst({
       where: {
