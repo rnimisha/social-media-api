@@ -18,29 +18,36 @@ model User {
   password String 
   name String
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   profilePic String?
   coverPic String? 
   refreshToken String?
 
   posts Post[] 
   likedPosts Like[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Post {
   id Int @id @default(autoincrement())
   description String
 
-  image String?
+  createdAt DateTime @default(now())
 
   userId Int
   author User @relation(fields: [userId], references: [id])
 
+  images PostImage[]
   likes Like[]
+}
 
-  createdAt DateTime @default(now())
+model PostImage {
+  id Int @id @default(autoincrement())
+  basename String
+
+  postId Int
+  post Post @relation(fields: [postId], references: [id])
 }
 
 model Like{
