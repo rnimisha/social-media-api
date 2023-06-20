@@ -22,6 +22,7 @@ export class PostService {
       include: {
         images: true,
         likes: true,
+        comments: true,
       },
     });
     return posts;
@@ -36,6 +37,7 @@ export class PostService {
       include: {
         images: true,
         likes: true,
+        comments: true,
       },
     });
 

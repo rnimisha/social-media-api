@@ -6,6 +6,14 @@ type LikeType = {
   postId: number;
 };
 
+type CommentType = {
+  id: number;
+  userId: number;
+  postId: number;
+  description: string;
+  createdAt: Date;
+};
+
 export type PostType = {
   id: number;
   description: string;
@@ -13,4 +21,5 @@ export type PostType = {
   userId: number;
   images: PostImageType[];
   likes: LikeType[];
+  comments: CommentType[];
 };
