@@ -20,7 +20,7 @@ import { CreatePostResType } from './types';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @Get('')
+  @Get()
   getAllPost() {
     return this.postService.getAllPost();
   }
@@ -30,7 +30,7 @@ export class PostController {
     return this.postService.getPostById();
   }
 
-  @Post('')
+  @Post()
   @UseInterceptors(FilesInterceptor('images', 4, PostImageInterceptorOptions))
   addNewPost(
     @getCurrentUserId() userId: number,
@@ -41,12 +41,12 @@ export class PostController {
     return this.postService.addNewPost(userId, body, filenames);
   }
 
-  @Put('')
+  @Put()
   updatePostById() {
     return this.postService.updatePostById();
   }
 
-  @Delete('')
+  @Delete()
   deleteSinglePostById() {
     return this.postService.deleteSinglePostById();
   }

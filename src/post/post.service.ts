@@ -7,14 +7,22 @@ import { CreatePostResType } from './types';
 export class PostService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getAllPost() {
-    return 'posts';
+  //----------------- Get All Post--------------------------
+  async getAllPost() {
+    const posts = await this.prisma.post.findMany({
+      include: {
+        images: true,
+        likes: true,
+      },
+    });
+    return posts;
   }
 
   getPostById() {
     return 'post';
   }
 
+  //----------------- Create New Post--------------------------
   async addNewPost(
     userId: number,
     data: CreatePostDto,
