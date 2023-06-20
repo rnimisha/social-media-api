@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Post } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { FollowService } from './follow.service';
 
 @Controller('follow')
@@ -6,8 +6,8 @@ export class FollowController {
   constructor(private readonly followService: FollowService) {}
 
   @Get(':username/following')
-  getAllFollowing() {
-    return this.followService.getAllFollowing();
+  getAllFollowing(@Param('username') username: string) {
+    return this.followService.getAllFollowing(username);
   }
 
   @Get(':username/follower')

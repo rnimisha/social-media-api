@@ -5,8 +5,29 @@ import { PrismaService } from 'src/prisma/prisma.service';
 export class FollowService {
   constructor(private readonly prisma: PrismaService) {}
 
-  getAllFollowing() {
-    return 'followings';
+  async getAllFollowing(username: string) {
+    const followings = await this.prisma.follow.findMany({
+      where: {
+        followerUser: {
+          username: {
+            equals: username,
+            mode: 'insensitive',
+          },
+        },
+      },
+      include: {
+        followingUser: {
+          select: {
+            id: true,
+            username: true,
+            profilePic: true,
+            name: true,
+          },
+        },
+      },
+    });
+
+    return followings;
   }
 
   getAllFollowers() {
