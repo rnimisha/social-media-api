@@ -128,7 +128,7 @@ export class AuthService {
       },
       {
         secret: this.config.get('ACCESS_SECRET'),
-        expiresIn: 60 * 15,
+        // expiresIn: 60 * 15,
       },
     );
 

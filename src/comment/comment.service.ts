@@ -27,7 +27,16 @@ export class CommentService {
     return comment;
   }
 
-  async deleteComment() {
-    return 'delete';
+  async deleteComment(commentId: number) {
+    const deleted = await this.prisma.comment.delete({
+      where: {
+        id: commentId,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return deleted;
   }
 }

@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { CommentDto } from './dto';
 
@@ -17,7 +25,7 @@ export class CommentController {
   }
 
   @Delete(':commentId')
-  deleteComment() {
-    return this.commentService.deleteComment();
+  deleteComment(@Param('commentId', ParseIntPipe) commentId: number) {
+    return this.commentService.deleteComment(commentId);
   }
 }
