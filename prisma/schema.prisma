@@ -75,6 +75,8 @@ model Like{
 
   postId Int
   postLiked Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
 }
 
 model Comment {

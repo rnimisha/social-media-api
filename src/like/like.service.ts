@@ -1,14 +1,37 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { LikeUnlikeDto } from './dto';
 
 @Injectable()
 export class LikeService {
   constructor(private readonly prisma: PrismaService) {}
-  likePost() {
-    return 'add';
+  async likePost(userId: number, data: LikeUnlikeDto) {
+    const newLike = await this.prisma.like.create({
+      data: {
+        userId: userId,
+        postId: data.postId,
+      },
+    });
+
+    return newLike;
   }
 
-  unlikePost() {
-    return 'unlike';
+  async unlikePost(userId: number, data: LikeUnlikeDto) {
+    const like = await this.prisma.like.findFirst({
+      where: {
+        userId: userId,
+        postId: data.postId,
+      },
+    });
+
+    if (!like) throw new NotFoundException('Post is not liked yet.');
+
+    const deleted = await this.prisma.like.delete({
+      where: {
+        id: like.id,
+      },
+    });
+
+    return deleted.id;
   }
 }

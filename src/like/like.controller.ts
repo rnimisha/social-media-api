@@ -1,17 +1,19 @@
-import { Controller, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Post } from '@nestjs/common';
 import { LikeService } from './like.service';
+import { LikeUnlikeDto } from './dto';
+import { getCurrentUserId } from 'src/common/decorator';
 
 @Controller('like')
 export class LikeController {
   constructor(private readonly likeService: LikeService) {}
 
-  @Post('add/:id')
-  likePost() {
-    return this.likeService.likePost();
+  @Post()
+  likePost(@getCurrentUserId() userId: number, @Body() data: LikeUnlikeDto) {
+    return this.likeService.likePost(userId, data);
   }
 
-  @Post('remove/:id')
-  unlikePost() {
-    return this.likeService.unlikePost();
+  @Delete()
+  unlikePost(@getCurrentUserId() userId: number, @Body() data: LikeUnlikeDto) {
+    return this.likeService.unlikePost(userId, data);
   }
 }
