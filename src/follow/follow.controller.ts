@@ -11,8 +11,8 @@ export class FollowController {
   }
 
   @Get(':username/follower')
-  getAllFollowers() {
-    return this.followService.getAllFollowers();
+  getAllFollowers(@Param('username') username: string) {
+    return this.followService.getAllFollowers(username);
   }
 
   @Post()
