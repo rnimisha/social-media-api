@@ -12,6 +12,9 @@ import { PostService } from './post.service';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { PostImageInterceptorOptions } from './interceptor';
 import { basename } from 'path';
+import { CreatePostDto } from './dto';
+import { getCurrentUserId } from 'src/common/decorator';
+import { CreatePostResType } from './types';
 
 @Controller('post')
 export class PostController {
@@ -30,12 +33,12 @@ export class PostController {
   @Post('')
   @UseInterceptors(FilesInterceptor('images', 4, PostImageInterceptorOptions))
   addNewPost(
-    @Body() body: any,
+    @getCurrentUserId() userId: number,
+    @Body() body: CreatePostDto,
     @UploadedFiles() files: Array<Express.Multer.File>,
-  ) {
+  ): Promise<CreatePostResType> {
     const filenames = files.map((file) => basename(file.path));
-    console.log({ filenames });
-    return this.postService.addNewPost();
+    return this.postService.addNewPost(userId, body, filenames);
   }
 
   @Put('')
