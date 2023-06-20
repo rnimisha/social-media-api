@@ -8,12 +8,18 @@ export class LikeController {
   constructor(private readonly likeService: LikeService) {}
 
   @Post()
-  likePost(@getCurrentUserId() userId: number, @Body() data: LikeUnlikeDto) {
+  likePost(
+    @getCurrentUserId() userId: number,
+    @Body() data: LikeUnlikeDto,
+  ): Promise<{ id: number }> {
     return this.likeService.likePost(userId, data);
   }
 
   @Delete()
-  unlikePost(@getCurrentUserId() userId: number, @Body() data: LikeUnlikeDto) {
+  unlikePost(
+    @getCurrentUserId() userId: number,
+    @Body() data: LikeUnlikeDto,
+  ): Promise<{ id: number }> {
     return this.likeService.unlikePost(userId, data);
   }
 }

@@ -7,9 +7,10 @@ import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from './common/guard';
 import { PostModule } from './post/post.module';
 import { LikeModule } from './like/like.module';
+import { CommentModule } from './comment/comment.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule, PostModule, LikeModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule, PostModule, LikeModule, CommentModule],
   providers: [
     {
       provide: APP_GUARD,

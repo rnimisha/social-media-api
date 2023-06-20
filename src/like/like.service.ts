@@ -5,7 +5,7 @@ import { LikeUnlikeDto } from './dto';
 @Injectable()
 export class LikeService {
   constructor(private readonly prisma: PrismaService) {}
-  async likePost(userId: number, data: LikeUnlikeDto) {
+  async likePost(userId: number, data: LikeUnlikeDto): Promise<{ id: number }> {
     const newLike = await this.prisma.like.create({
       data: {
         userId: userId,
@@ -13,10 +13,13 @@ export class LikeService {
       },
     });
 
-    return newLike;
+    return { id: newLike.id };
   }
 
-  async unlikePost(userId: number, data: LikeUnlikeDto) {
+  async unlikePost(
+    userId: number,
+    data: LikeUnlikeDto,
+  ): Promise<{ id: number }> {
     const like = await this.prisma.like.findFirst({
       where: {
         userId: userId,
@@ -32,6 +35,6 @@ export class LikeService {
       },
     });
 
-    return deleted.id;
+    return { id: deleted.id };
   }
 }
