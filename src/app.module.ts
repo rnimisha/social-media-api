@@ -5,11 +5,15 @@ import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AccessTokenGuard } from './common/guard';
+import { PostModule } from './post/post.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule, PostModule],
   providers: [
-    { provide: APP_GUARD, useClass: AccessTokenGuard },
+    {
+      provide: APP_GUARD,
+      useClass: AccessTokenGuard,
+    },
     PrismaService,
   ],
 })
