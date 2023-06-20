@@ -11,6 +11,7 @@ import { CommentModule } from './comment/comment.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { FollowModule } from './follow/follow.module';
+import { FeedModule } from './feed/feed.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { FollowModule } from './follow/follow.module';
     LikeModule,
     CommentModule,
     FollowModule,
+    FeedModule,
   ],
   providers: [
     {

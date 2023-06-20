@@ -23,8 +23,8 @@ export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get(':username')
-  getAllUserPost(@Param('username') username: string): Promise<PostType[]> {
-    return this.postService.getAllUserPost(username);
+  getSingleUserPost(@Param('username') username: string): Promise<PostType[]> {
+    return this.postService.getSingleUserPost(username);
   }
 
   @Get(':username/:postid')

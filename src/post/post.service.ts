@@ -9,32 +9,9 @@ export class PostService {
   constructor(private readonly prisma: PrismaService) {}
 
   //----------------- Get All Post of the user--------------------------
-  async getAllUserPost(username: string): Promise<PostType[]> {
-    const posts = await this.prisma.post.findMany({
-      where: {
-        author: {
-          username: {
-            equals: username,
-            mode: 'insensitive',
-          },
-        },
-      },
-      include: {
-        images: true,
-        likes: true,
-        comments: true,
-      },
-    });
-
-    const postsWithImagePath = posts.map((post) => ({
-      ...post,
-      images: post.images.map((image) => ({
-        ...image,
-        basename: `./uploads/posts/${image.basename}`,
-      })),
-    }));
-
-    return postsWithImagePath;
+  async getSingleUserPost(username: string): Promise<PostType[]> {
+    const posts = await this.getMultipleUserPost([username]);
+    return posts;
   }
 
   //----------------- Get single post--------------------------
@@ -96,5 +73,34 @@ export class PostService {
     });
 
     return post;
+  }
+
+  //------------- Get post of username in list--------------------
+  async getMultipleUserPost(username: string[]): Promise<PostType[]> {
+    const posts = await this.prisma.post.findMany({
+      where: {
+        author: {
+          username: {
+            in: username,
+            mode: 'insensitive',
+          },
+        },
+      },
+      include: {
+        images: true,
+        likes: true,
+        comments: true,
+      },
+    });
+
+    const postsWithImagePath = posts.map((post) => ({
+      ...post,
+      images: post.images.map((image) => ({
+        ...image,
+        basename: `./uploads/posts/${image.basename}`,
+      })),
+    }));
+
+    return postsWithImagePath;
   }
 }

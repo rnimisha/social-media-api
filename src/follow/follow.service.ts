@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { FollowerType, FollowingType } from './types';
+import { FollowReqDto } from './dto';
 
 @Injectable()
 export class FollowService {
@@ -58,22 +59,33 @@ export class FollowService {
     return followers;
   }
 
-  async followUser(): Promise<{ msg: string }> {
+  async followUser(
+    userId: number,
+    data: FollowReqDto,
+  ): Promise<{ msg: string }> {
     await this.prisma.follow.create({
       data: {
-        followerId: 7,
-        followingId: 9,
+        followerId: userId,
+        followingId: data.userToFollowId,
       },
     });
     return { msg: 'User followed successfully' };
   }
 
-  async unfollowUser(): Promise<{ msg: string }> {
+  async unfollowUser(id: number): Promise<{ msg: string }> {
     await this.prisma.follow.delete({
       where: {
-        id: 1,
+        id: id,
       },
     });
     return { msg: 'User unfollowed successfully' };
+  }
+
+  //--------------helper-------------------------------
+  async getFollowingUsernames(username: string): Promise<string[]> {
+    const followings = await this.getAllFollowing(username);
+
+    const usernamesOnly = followings.map((item) => item.followingUser.username);
+    return usernamesOnly;
   }
 }
