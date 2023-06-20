@@ -25,7 +25,16 @@ export class PostService {
         comments: true,
       },
     });
-    return posts;
+
+    const postsWithImagePath = posts.map((post) => ({
+      ...post,
+      images: post.images.map((image) => ({
+        ...image,
+        basename: `./uploads/posts/${image.basename}`,
+      })),
+    }));
+
+    return postsWithImagePath;
   }
 
   //----------------- Get single post--------------------------

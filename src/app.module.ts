@@ -8,9 +8,24 @@ import { AccessTokenGuard } from './common/guard';
 import { PostModule } from './post/post.module';
 import { LikeModule } from './like/like.module';
 import { CommentModule } from './comment/comment.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
+import { FollowModule } from './follow/follow.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), AuthModule, PrismaModule, PostModule, LikeModule, CommentModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+    }),
+    AuthModule,
+    PrismaModule,
+    PostModule,
+    LikeModule,
+    CommentModule,
+    FollowModule,
+  ],
   providers: [
     {
       provide: APP_GUARD,
