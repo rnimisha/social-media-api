@@ -1,21 +1,22 @@
-import { Controller, Delete, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post } from '@nestjs/common';
 import { CommentService } from './comment.service';
+import { CommentDto } from './dto';
 
 @Controller('comment')
 export class CommentController {
   constructor(private readonly commentService: CommentService) {}
 
-  @Get(':id')
+  @Get('post/:postId')
   getCommentByPostId() {
     return this.commentService.getCommentByPostId();
   }
 
   @Post()
-  addComment() {
-    return this.commentService.addComment();
+  addComment(@Body() data: CommentDto) {
+    return this.commentService.addComment(data);
   }
 
-  @Delete(':id')
+  @Delete(':commentId')
   deleteComment() {
     return this.commentService.deleteComment();
   }
