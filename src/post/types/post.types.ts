@@ -1,9 +1,16 @@
 import { PostImageType } from './post-image.types';
 
-export type CreatePostResType = {
+type LikeType = {
+  id: number;
+  userId: number;
+  postId: number;
+};
+
+export type PostType = {
   id: number;
   description: string;
   createdAt: Date | string;
   userId: number;
   images: PostImageType[];
+  likes: LikeType[];
 };

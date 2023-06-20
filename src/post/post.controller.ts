@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
   Put,
   UploadedFiles,
@@ -15,19 +17,20 @@ import { basename } from 'path';
 import { CreatePostDto } from './dto';
 import { getCurrentUserId } from 'src/common/decorator';
 import { CreatePostResType } from './types';
+import { PostType } from './types/post.types';
 
 @Controller('post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get()
-  getAllPost() {
+  getAllPost(): Promise<PostType[]> {
     return this.postService.getAllPost();
   }
 
   @Get(':id')
-  getPostById() {
-    return this.postService.getPostById();
+  getPostById(@Param('id', ParseIntPipe) id: number): Promise<PostType> {
+    return this.postService.getPostById(id);
   }
 
   @Post()
