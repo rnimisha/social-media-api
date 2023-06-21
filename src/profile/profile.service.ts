@@ -1,12 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { NotFoundError } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateUserDto } from './dto';
+import { ProfileType, UpdateProfileType } from './types';
 
 @Injectable()
 export class ProfileService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async getUserProfile(username: string) {
+  async getUserProfile(username: string): Promise<ProfileType> {
     const user = await this.prisma.user.findFirst({
       where: {
         username: {
@@ -20,7 +21,6 @@ export class ProfileService {
         username: true,
         name: true,
         createdAt: true,
-        updatedAt: true,
         profilePic: true,
         coverPic: true,
         followers: true,
@@ -36,11 +36,30 @@ export class ProfileService {
     return { ...others, followerCount, followingCount, postCount };
   }
 
-  updateUserProfile(username: string) {
-    return 'user';
+  async updateUserProfile(
+    username: string,
+    data: UpdateUserDto,
+  ): Promise<UpdateProfileType> {
+    const userId = await this.checkUserExist(username);
+    const updated = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data,
+      select: {
+        id: true,
+        email: true,
+        username: true,
+        name: true,
+        profilePic: true,
+        coverPic: true,
+        updatedAt: true,
+      },
+    });
+    return updated;
   }
 
-  async deleteUserProfile(username: string) {
+  async deleteUserProfile(username: string): Promise<{ msg: string }> {
     const userId = await this.checkUserExist(username);
     await this.prisma.user.delete({
       where: {

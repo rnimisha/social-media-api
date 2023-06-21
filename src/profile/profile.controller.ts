@@ -1,24 +1,56 @@
-import { Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Put,
+  UploadedFiles,
+  UseInterceptors,
+} from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { getCurrentUser } from 'src/common/decorator';
 import { confirmUserMatch } from 'src/common/decorator/confirm-user-match';
+import { UpdateUserDto } from './dto';
+import { ProfileType, UpdateProfileType } from './types';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
+import { ProfileImageInterceptorOptions } from 'src/post/interceptor';
 
 @Controller('profile/:user')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Get()
-  getUserProfile(@Param('user') user: string) {
+  getUserProfile(@Param('user') user: string): Promise<ProfileType> {
     return this.profileService.getUserProfile(user);
   }
 
   @Put()
-  updateUserProfile(@confirmUserMatch() username: string) {
-    return this.profileService.updateUserProfile(username);
+  @UseInterceptors(
+    FileFieldsInterceptor(
+      [
+        { name: 'profilePic', maxCount: 1 },
+        { name: 'coverPic', maxCount: 1 },
+      ],
+      ProfileImageInterceptorOptions,
+    ),
+  )
+  updateUserProfile(
+    @confirmUserMatch() username: string,
+    @UploadedFiles()
+    files: {
+      profilePic?: Express.Multer.File[];
+      coverPic?: Express.Multer.File[];
+    },
+    @Body() data: UpdateUserDto,
+  ): Promise<UpdateProfileType> {
+    console.log(files);
+    return this.profileService.updateUserProfile(username, data);
   }
 
   @Delete()
-  deleteUserProfile(@confirmUserMatch() username: string) {
+  deleteUserProfile(
+    @confirmUserMatch() username: string,
+  ): Promise<{ msg: string }> {
     return this.profileService.deleteUserProfile(username);
   }
 }
