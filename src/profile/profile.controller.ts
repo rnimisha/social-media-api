@@ -1,5 +1,7 @@
 import { Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { ProfileService } from './profile.service';
+import { getCurrentUser } from 'src/common/decorator';
+import { confirmUserMatch } from 'src/common/decorator/confirm-user-match';
 
 @Controller('profile/:user')
 export class ProfileController {
@@ -11,12 +13,12 @@ export class ProfileController {
   }
 
   @Put()
-  updateUserProfile() {
-    return this.profileService.updateUserProfile();
+  updateUserProfile(@confirmUserMatch() username: string) {
+    return this.profileService.updateUserProfile(username);
   }
 
   @Delete()
-  deleteUserProfile() {
-    return this.profileService.deleteUserProfile();
+  deleteUserProfile(@confirmUserMatch() username: string) {
+    return this.profileService.deleteUserProfile(username);
   }
 }

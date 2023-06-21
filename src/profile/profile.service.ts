@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { NotFoundError } from 'rxjs';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -35,11 +36,33 @@ export class ProfileService {
     return { ...others, followerCount, followingCount, postCount };
   }
 
-  updateUserProfile() {
+  updateUserProfile(username: string) {
     return 'user';
   }
 
-  deleteUserProfile() {
-    return 'user';
+  async deleteUserProfile(username: string) {
+    const userId = await this.checkUserExist(username);
+    await this.prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
+    return { msg: 'user deleted successfully' };
+  }
+
+  //---------------------helper-----------------------------
+  async checkUserExist(username: string): Promise<number> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        username: {
+          equals: username,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (!user) throw new NotFoundException('User not found');
+
+    return user.id;
   }
 }
