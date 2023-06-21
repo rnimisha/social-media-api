@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateUserDto } from './dto';
-import { ProfileType, UpdateProfileType } from './types';
+import { ProfileImageType, ProfileType, UpdateProfileType } from './types';
 
 @Injectable()
 export class ProfileService {
@@ -39,13 +39,17 @@ export class ProfileService {
   async updateUserProfile(
     username: string,
     data: UpdateUserDto,
+    images: ProfileImageType,
   ): Promise<UpdateProfileType> {
     const userId = await this.checkUserExist(username);
     const updated = await this.prisma.user.update({
       where: {
         id: userId,
       },
-      data,
+      data: {
+        ...data,
+        ...images,
+      },
       select: {
         id: true,
         email: true,

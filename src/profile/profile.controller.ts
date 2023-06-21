@@ -14,6 +14,7 @@ import { UpdateUserDto } from './dto';
 import { ProfileType, UpdateProfileType } from './types';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ProfileImageInterceptorOptions } from 'src/post/interceptor';
+import { extractProfileImg } from 'src/common/helper';
 
 @Controller('profile/:user')
 export class ProfileController {
@@ -43,8 +44,8 @@ export class ProfileController {
     },
     @Body() data: UpdateUserDto,
   ): Promise<UpdateProfileType> {
-    console.log(files);
-    return this.profileService.updateUserProfile(username, data);
+    const images = files ? extractProfileImg(files) : {};
+    return this.profileService.updateUserProfile(username, data, images);
   }
 
   @Delete()
