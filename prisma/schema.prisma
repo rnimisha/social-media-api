@@ -29,8 +29,8 @@ model User {
   likedPosts Like[]
   comments Comment[]
 
-  followers Follow[]  @relation("FollowerUser")
-  followings Follow[]  @relation("FollowingUser")
+  followers Follow[]  @relation("FollowingUser")
+  followings Follow[]  @relation("FollowerUser")
 }
 
 model Follow{
@@ -41,6 +41,8 @@ model Follow{
 
   followingId Int
   followingUser User @relation("FollowingUser", fields: [followingId], references: [id], onDelete: Cascade)
+
+  @@unique([followerId, followingId])
 }
 
 model Post {
