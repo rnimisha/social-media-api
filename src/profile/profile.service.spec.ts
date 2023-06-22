@@ -3,6 +3,7 @@ import { ProfileService } from './profile.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { ConfigModule } from '@nestjs/config';
 import { NotFoundException } from '@nestjs/common';
+import { UpdateUserDto } from './dto';
 
 describe('ProfileService', () => {
   let service: ProfileService;
@@ -59,7 +60,7 @@ describe('ProfileService', () => {
         };
 
         expect(profile).toEqual(withCount);
-        expect(prismaService.user.findFirst).toHaveBeenCalled();
+        expect(prismaService.user.findFirst).toHaveBeenCalledTimes(1);
       });
     });
 
@@ -72,6 +73,63 @@ describe('ProfileService', () => {
         await expect(service.getUserProfile(username)).rejects.toThrowError(
           NotFoundException,
         );
+      });
+    });
+  });
+
+  describe('updateUserProfile', () => {
+    describe('valid username, dto and image path is provided', () => {
+      it('should update the usernames details', async () => {
+        const username = 'testuser';
+        const data = new UpdateUserDto();
+
+        const expected = {
+          id: 1,
+          email: 'test@example.com',
+          username: username,
+          password: 'password123',
+          name: 'Test User',
+          createdAt: new Date(),
+          profilePic: 'profile.jpg',
+          coverPic: 'cover.jpg',
+          updatedAt: new Date(),
+          refreshToken: 'kfv',
+        };
+
+        jest.spyOn(prismaService.user, 'update').mockResolvedValue(expected);
+        jest.spyOn(service, 'checkUserExist').mockResolvedValue(1);
+
+        await service.updateUserProfile(username, data, {});
+        expect(prismaService.user.update).toHaveBeenCalledTimes(1);
+        expect(service.checkUserExist).toHaveBeenCalledTimes(1);
+      });
+    });
+  });
+
+  describe('deleteUserProfile', () => {
+    describe('valid username is provided', () => {
+      it('should update the usernames details', async () => {
+        const username = 'testuser';
+
+        const expected = {
+          id: 1,
+          email: 'test@example.com',
+          username: username,
+          password: 'password123',
+          name: 'Test User',
+          createdAt: new Date(),
+          profilePic: 'profile.jpg',
+          coverPic: 'cover.jpg',
+          updatedAt: new Date(),
+          refreshToken: 'kfv',
+        };
+
+        jest.spyOn(prismaService.user, 'delete').mockResolvedValue(expected);
+        jest.spyOn(service, 'checkUserExist').mockResolvedValue(1);
+
+        await service.deleteUserProfile(username);
+        expect(prismaService.user.delete).toHaveBeenCalledTimes(1);
+        expect(service.checkUserExist).toHaveBeenCalledTimes(1);
       });
     });
   });
