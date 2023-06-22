@@ -1,15 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto';
 import { CreatePostResType } from './types';
 import { PostType } from './types/post.types';
+import { ProfileService } from '../profile/profile.service';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly profileService: ProfileService,
+  ) {}
 
   //----------------- Get All Post of the user--------------------------
   async getSingleUserPost(username: string): Promise<PostType[]> {
+    await this.profileService.checkUserExist(username);
     const posts = await this.getMultipleUserPost([username]);
     return posts;
   }

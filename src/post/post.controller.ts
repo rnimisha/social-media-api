@@ -14,7 +14,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { PostImageInterceptorOptions } from './interceptor';
 import { basename } from 'path';
 import { CreatePostDto } from './dto';
-import { getCurrentUserId } from 'src/common/decorator';
+import { getCurrentUserId } from '../common/decorator';
 import { CreatePostResType } from './types';
 import { PostType } from './types/post.types';
 
