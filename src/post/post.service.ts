@@ -16,6 +16,8 @@ export class PostService {
   async getSingleUserPost(username: string): Promise<PostType[]> {
     await this.profileService.checkUserExist(username);
     const posts = await this.getMultipleUserPost([username]);
+    if (posts.length === 0)
+      throw new NotFoundException('User does not have post');
     return posts;
   }
 

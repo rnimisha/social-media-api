@@ -19,14 +19,6 @@ describe('ProfileService', () => {
     prismaService = module.get<PrismaService>(PrismaService);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('getUserProfile', () => {
     describe('valid username is provided ', () => {
       it('should find and return user detail of matching username', async () => {
@@ -49,17 +41,17 @@ describe('ProfileService', () => {
 
         jest.spyOn(prismaService.user, 'findFirst').mockResolvedValue(user);
 
-        const profile = await service.getUserProfile(username);
+        const actual = await service.getUserProfile(username);
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { followings, followers, posts, ...withCount } = {
+        const { followings, followers, posts, ...expected } = {
           ...user,
           followerCount: 2,
           followingCount: 1,
           postCount: 2,
         };
 
-        expect(profile).toEqual(withCount);
+        expect(actual).toEqual(expected);
         expect(prismaService.user.findFirst).toHaveBeenCalledTimes(1);
       });
     });

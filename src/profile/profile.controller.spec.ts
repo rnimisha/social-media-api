@@ -33,7 +33,7 @@ describe('ProfileController', () => {
       it('should return profile detail of the user', async () => {
         const user = 'kiko';
 
-        const profileValue: ProfileType = {
+        const expected: ProfileType = {
           id: expect.any(Number),
           email: 'kiko@gmail.com',
           username: user,
@@ -48,11 +48,11 @@ describe('ProfileController', () => {
 
         jest
           .spyOn(profileService, 'getUserProfile')
-          .mockResolvedValue(profileValue);
+          .mockResolvedValue(expected);
 
-        const resp = await controller.getUserProfile(user);
+        const actual = await controller.getUserProfile(user);
 
-        expect(resp).toEqual(profileValue);
+        expect(actual).toEqual(expected);
         expect(profileService.getUserProfile).toHaveBeenCalledWith(user);
       });
     });
@@ -91,16 +91,16 @@ describe('ProfileController', () => {
     describe('valid and existig username is provided', () => {
       it('should return delete success message', async () => {
         const username = 'kiko';
-        const respValue = {
+        const expected = {
           msg: 'user deleted successfully',
         };
         (profileService.deleteUserProfile as jest.Mock).mockResolvedValue(
-          respValue,
+          expected,
         );
 
-        const resp = await controller.deleteUserProfile(username);
+        const actual = await controller.deleteUserProfile(username);
 
-        expect(resp).toEqual(respValue);
+        expect(actual).toEqual(expected);
         expect(profileService.deleteUserProfile).toHaveBeenCalledWith(username);
       });
     });
