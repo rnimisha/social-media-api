@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ProfileController } from './profile.controller';
 import { ProfileService } from './profile.service';
 import { UpdateUserDto } from './dto';
+import { NotFoundException } from '@nestjs/common';
+import { ProfileType } from './types';
 
 describe('ProfileController', () => {
   let controller: ProfileController;
@@ -31,12 +33,12 @@ describe('ProfileController', () => {
       it('should return profile detail of the user', async () => {
         const user = 'kiko';
 
-        const profileValue = {
+        const profileValue: ProfileType = {
           id: expect.any(Number),
           email: 'kiko@gmail.com',
           username: user,
           name: 'kiki',
-          createdAt: '2023-06-19T17:01:55.745Z',
+          createdAt: new Date(),
           profilePic: '1687367056629-6f86243b481146aea870c7ad9102ffbf.png',
           coverPic: '1687367056634-7549eed858ea4bf39b5603a4f05dcb46.png',
           followerCount: 0,
@@ -44,14 +46,26 @@ describe('ProfileController', () => {
           postCount: 4,
         };
 
-        (profileService.getUserProfile as jest.Mock).mockResolvedValue(
-          profileValue,
-        );
+        jest
+          .spyOn(profileService, 'getUserProfile')
+          .mockResolvedValue(profileValue);
 
         const resp = await controller.getUserProfile(user);
 
         expect(resp).toEqual(profileValue);
         expect(profileService.getUserProfile).toHaveBeenCalledWith(user);
+      });
+    });
+
+    describe('non existing username is provided', () => {
+      it('should throw not found error', async () => {
+        jest
+          .spyOn(profileService, 'getUserProfile')
+          .mockRejectedValue(new NotFoundException());
+
+        await expect(
+          controller.getUserProfile('unknownuser'),
+        ).rejects.toThrowError(NotFoundException);
       });
     });
   });
