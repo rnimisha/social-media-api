@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { UpdateUserDto } from './dto';
 import { ProfileImageType, ProfileType, UpdateProfileType } from './types';
 
@@ -28,6 +28,8 @@ export class ProfileService {
         posts: true,
       },
     });
+
+    if (!user) throw new NotFoundException('User not found');
 
     const { followings, followers, posts, ...others } = user;
     const followingCount = followings.length;

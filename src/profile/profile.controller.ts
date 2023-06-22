@@ -9,12 +9,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
-import { confirmUserMatch } from 'src/common/decorator/confirm-user-match';
+import { confirmUserMatch } from '../common/decorator/confirm-user-match';
 import { UpdateUserDto } from './dto';
 import { ProfileType, UpdateProfileType } from './types';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { ProfileImageInterceptorOptions } from 'src/post/interceptor';
-import { extractProfileImg } from 'src/common/helper';
+import { ProfileImageInterceptorOptions } from '../post/interceptor';
+import { extractProfileImg } from '../common/helper';
 
 @Controller('profile/:user')
 export class ProfileController {
