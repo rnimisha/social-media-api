@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Post } from '@nestjs/common';
 import { LikeService } from './like.service';
 import { LikeUnlikeDto } from './dto';
-import { getCurrentUserId } from 'src/common/decorator';
+import { getCurrentUserId } from '../common/decorator';
 
 @Controller('like')
 export class LikeController {
