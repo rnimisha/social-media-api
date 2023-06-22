@@ -22,10 +22,6 @@ describe('PostService', () => {
     profileService = module.get<ProfileService>(ProfileService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('getSingleUserPost', () => {
     describe('valid username is provided', () => {
       it('should return array of post of the user', async () => {

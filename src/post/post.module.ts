@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { PostController } from './post.controller';
 import { PostService } from './post.service';
-import { ProfileModule } from 'src/profile/profile.module';
+import { ProfileModule } from '../profile/profile.module';
 
 @Module({
   imports: [ProfileModule],

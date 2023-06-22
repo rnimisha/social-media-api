@@ -110,4 +110,15 @@ export class PostService {
 
     return postsWithImagePath;
   }
+
+  async checkPostExists(postId: number): Promise<boolean> {
+    const post = await this.prisma.post.findFirst({
+      where: {
+        id: postId,
+      },
+    });
+
+    if (!post) throw new NotFoundException('Post not found');
+    return true;
+  }
 }
