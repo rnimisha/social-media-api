@@ -1,22 +1,31 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { CommentDto } from './dto';
+import { CommentType } from './types';
+import { PostService } from '../post/post.service';
 
 @Injectable()
 export class CommentService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly postService: PostService,
+  ) {}
 
-  async getCommentByPostId() {
+  async getCommentByPostId(postId: number): Promise<CommentType[]> {
+    await this.postService.checkPostExists(postId);
     const comments = await this.prisma.comment.findMany({
       where: {
-        postId: 6,
+        postId: postId,
       },
     });
     return comments;
   }
 
-  async addComment(data: CommentDto) {
+  async addComment(data: CommentDto): Promise<CommentType> {
     const { description, userId, postId } = data;
+
+    await this.postService.checkPostExists(postId);
+
     const comment = await this.prisma.comment.create({
       data: {
         description,
@@ -27,7 +36,7 @@ export class CommentService {
     return comment;
   }
 
-  async deleteComment(commentId: number) {
+  async deleteComment(commentId: number): Promise<{ id: number }> {
     const deleted = await this.prisma.comment.delete({
       where: {
         id: commentId,
