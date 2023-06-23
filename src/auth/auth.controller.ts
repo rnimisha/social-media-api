@@ -4,7 +4,13 @@ import { AuthDto, LoginDto } from './dto';
 import { TokenType } from './types';
 import { getCurrentUserId, getCurrentUser, Public } from '../common/decorator';
 import { RefreshTokenGuard } from '../common/guard';
-import { ApiTags } from '@nestjs/swagger';
+import {
+  ApiConflictResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('auth')
 @ApiTags('Authentication')
@@ -13,16 +19,20 @@ export class AuthController {
 
   @Public()
   @Post('register')
+  @ApiConflictResponse({ description: 'Email or username already registered' })
   register(@Body() dto: AuthDto): Promise<TokenType> {
     return this.authService.register(dto);
   }
 
   @Public()
   @Post('login')
+  @ApiNotFoundResponse({ description: 'User is not registered' })
+  @ApiForbiddenResponse({ description: 'Password does not match' })
   login(@Body() dto: LoginDto): Promise<TokenType> {
     return this.authService.login(dto);
   }
 
+  @ApiSecurity('JWT-access')
   @Post('logout')
   logout(@getCurrentUserId() userId: number) {
     console.log(userId);

@@ -15,19 +15,22 @@ import { ProfileType, UpdateProfileType } from './types';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ProfileImageInterceptorOptions } from '../post/interceptor';
 import { extractProfileImg } from '../common/helper';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiNotFoundResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('profile/:user')
 @ApiTags('Profile')
+@ApiSecurity('JWT-access')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
   @Get()
+  @ApiNotFoundResponse({ description: 'User not found' })
   getUserProfile(@Param('user') user: string): Promise<ProfileType> {
     return this.profileService.getUserProfile(user);
   }
 
   @Put()
+  @ApiNotFoundResponse({ description: 'User not found' })
   @UseInterceptors(
     FileFieldsInterceptor(
       [
@@ -51,6 +54,7 @@ export class ProfileController {
   }
 
   @Delete()
+  @ApiNotFoundResponse({ description: 'User not found' })
   deleteUserProfile(
     @confirmUserMatch() username: string,
   ): Promise<{ msg: string }> {

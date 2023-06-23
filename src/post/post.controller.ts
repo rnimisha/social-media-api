@@ -17,19 +17,26 @@ import { CreatePostDto } from './dto';
 import { getCurrentUserId } from '../common/decorator';
 import { CreatePostResType } from './types';
 import { PostType } from './types/post.types';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiNotFoundResponse, ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('post')
 @ApiTags('Post')
+@ApiSecurity('JWT-access')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Get(':username')
+  @ApiNotFoundResponse({
+    description: 'User does not have post or User not found',
+  })
   getSingleUserPost(@Param('username') username: string): Promise<PostType[]> {
     return this.postService.getSingleUserPost(username);
   }
 
   @Get(':username/:postid')
+  @ApiNotFoundResponse({
+    description: 'Post with the id not found',
+  })
   getPostByPostId(
     @Param('postid', ParseIntPipe) postid: number,
   ): Promise<PostType> {
@@ -47,6 +54,9 @@ export class PostController {
     return this.postService.addNewPost(userId, body, filenames);
   }
 
+  @ApiNotFoundResponse({
+    description: 'Post with the id not found',
+  })
   @Delete(':username/:postid')
   deleteSinglePostById(
     @Param('postid', ParseIntPipe) postid: number,

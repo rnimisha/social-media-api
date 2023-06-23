@@ -48,7 +48,7 @@ export class LikeService {
       },
     });
 
-    if (!like) throw new NotFoundException('Post is not liked yet.');
+    if (!like) throw new BadRequestException('Post is not liked yet.');
 
     const deleted = await this.prisma.like.delete({
       where: {

@@ -6,7 +6,7 @@ import { LikeUnlikeDto } from './dto';
 import { Like } from '@prisma/client';
 import { PostService } from '../post/post.service';
 import { ProfileService } from '../profile/profile.service';
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 
 describe('LikeService', () => {
   let service: LikeService;
@@ -96,7 +96,7 @@ describe('LikeService', () => {
         jest.spyOn(prismaService.like, 'findFirst').mockResolvedValue(null);
 
         await expect(service.unlikePost(userId, data)).rejects.toThrowError(
-          NotFoundException,
+          BadRequestException,
         );
 
         expect(postService.checkPostExists).toHaveBeenCalledTimes(1);

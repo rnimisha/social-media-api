@@ -11,10 +11,11 @@ import { FollowService } from './follow.service';
 import { getCurrentUserId } from '../common/decorator';
 import { FollowReqDto } from './dto';
 import { FollowerType, FollowingType } from './types';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('follow')
 @ApiTags('Follow')
+@ApiSecurity('JWT-access')
 export class FollowController {
   constructor(private readonly followService: FollowService) {}
 
