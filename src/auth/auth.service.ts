@@ -1,9 +1,10 @@
 import {
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../prisma/prisma.service';
 import { AuthDto, LoginDto } from './dto';
 import * as bcrypt from 'bcrypt';
 import { TokenType } from './types';
@@ -22,6 +23,8 @@ export class AuthService {
   async register(dto: AuthDto): Promise<TokenType> {
     const { email, password, username, name } = dto;
 
+    await this.checkUniqueEmail(email);
+    await this.checkUniqueUsername(username);
     const hash = await bcrypt.hash(password, 10);
     const newUser = await this.prisma.user.create({
       data: {
@@ -161,5 +164,33 @@ export class AuthService {
         refreshToken: hashed,
       },
     });
+  }
+
+  async checkUniqueEmail(email: string): Promise<boolean> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        email: {
+          equals: email,
+          mode: 'insensitive',
+        },
+      },
+    });
+    if (user) throw new ConflictException('Email already registered');
+
+    return true;
+  }
+
+  async checkUniqueUsername(username: string): Promise<boolean> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        username: {
+          equals: username,
+          mode: 'insensitive',
+        },
+      },
+    });
+
+    if (user) throw new ConflictException('Username already exists');
+    return true;
   }
 }
