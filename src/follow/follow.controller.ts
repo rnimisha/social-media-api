@@ -8,7 +8,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { FollowService } from './follow.service';
-import { getCurrentUserId } from 'src/common/decorator';
+import { getCurrentUserId } from '../common/decorator';
 import { FollowReqDto } from './dto';
 import { FollowerType, FollowingType } from './types';
 
@@ -40,8 +40,9 @@ export class FollowController {
 
   @Delete(':id')
   unfollowUser(
+    @getCurrentUserId() userId: number,
     @Param('id', ParseIntPipe) id: number,
   ): Promise<{ msg: string }> {
-    return this.followService.unfollowUser(id);
+    return this.followService.unfollowUser(userId, id);
   }
 }

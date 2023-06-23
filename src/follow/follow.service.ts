@@ -72,10 +72,14 @@ export class FollowService {
     return { msg: 'User followed successfully' };
   }
 
-  async unfollowUser(id: number): Promise<{ msg: string }> {
+  async unfollowUser(
+    currentUser: number,
+    userToUnfollow: number,
+  ): Promise<{ msg: string }> {
+    const followId = await this.findFollowId(currentUser, userToUnfollow);
     await this.prisma.follow.delete({
       where: {
-        id: id,
+        id: followId,
       },
     });
     return { msg: 'User unfollowed successfully' };
@@ -87,5 +91,19 @@ export class FollowService {
 
     const usernamesOnly = followings.map((item) => item.followingUser.username);
     return usernamesOnly;
+  }
+
+  async findFollowId(
+    currentUser: number,
+    userToUnfollow: number,
+  ): Promise<number> {
+    const follow = await this.prisma.follow.findFirst({
+      where: {
+        followerId: currentUser,
+        followingId: userToUnfollow,
+      },
+    });
+
+    return follow.id;
   }
 }
