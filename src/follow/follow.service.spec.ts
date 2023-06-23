@@ -1,33 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { FollowController } from './follow.controller';
 import { FollowService } from './follow.service';
+import { ConfigModule } from '@nestjs/config';
+import { PrismaService } from '../prisma/prisma.service';
 import { FollowReqDto } from './dto';
 
-describe('FollowController', () => {
-  let controller: FollowController;
-  let followService: FollowService;
+describe('FollowService', () => {
+  let service: FollowService;
+  let prismaService: PrismaService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [FollowController],
-      providers: [
-        {
-          provide: FollowService,
-          useValue: {
-            getAllFollowing: jest.fn(),
-            getAllFollowers: jest.fn(),
-            followUser: jest.fn(),
-            unfollowUser: jest.fn(),
-          },
-        },
-      ],
+      imports: [ConfigModule],
+      providers: [FollowService, PrismaService],
     }).compile();
 
-    controller = module.get<FollowController>(FollowController);
-    followService = module.get<FollowService>(FollowService);
+    service = module.get<FollowService>(FollowService);
+    prismaService = module.get<PrismaService>(PrismaService);
   });
 
-  describe('GET /follow/:username/following getAllFollowing', () => {
+  describe('getAllFollowing', () => {
     describe('valid username is provided', () => {
       it('should return array of following of the user', async () => {
         const username = 'test';
@@ -45,17 +36,17 @@ describe('FollowController', () => {
         const expected = Array(5).fill(singleFollowing);
 
         jest
-          .spyOn(followService, 'getAllFollowing')
+          .spyOn(prismaService.follow, 'findMany')
           .mockResolvedValue(expected);
-        const actual = await controller.getAllFollowing(username);
+        const actual = await service.getAllFollowing(username);
 
         expect(actual).toBe(expected);
-        expect(followService.getAllFollowing).toHaveBeenCalledWith(username);
+        expect(prismaService.follow.findMany).toHaveBeenCalledTimes(1);
       });
     });
   });
 
-  describe('GET /follow/:username/follower getAllFollowers', () => {
+  describe('getAllFollowers', () => {
     describe('valid username is provided', () => {
       it('should return array of follower of the user', async () => {
         const username = 'test';
@@ -73,51 +64,61 @@ describe('FollowController', () => {
         const expected = Array(5).fill(singleFollower);
 
         jest
-          .spyOn(followService, 'getAllFollowers')
+          .spyOn(prismaService.follow, 'findMany')
           .mockResolvedValue(expected);
-        const actual = await controller.getAllFollowers(username);
+        const actual = await service.getAllFollowers(username);
 
         expect(actual).toBe(expected);
-        expect(followService.getAllFollowers).toHaveBeenCalledWith(username);
+        expect(prismaService.follow.findMany).toHaveBeenCalledTimes(1);
       });
     });
   });
 
-  describe('POST  followUser', () => {
+  describe('followUser', () => {
     describe('valid dto is provided by current current user', () => {
       it('should follow the user in the dto', async () => {
         const userId = 2;
         const data: FollowReqDto = { userToFollowId: 1 };
+        const resolved = {
+          id: 1,
+          followingId: userId,
+          followerId: data.userToFollowId,
+        };
         const expected = {
           msg: 'User followed successfully',
         };
 
-        jest.spyOn(followService, 'followUser').mockResolvedValue(expected);
-        const actual = await controller.followUser(userId, data);
+        jest.spyOn(prismaService.follow, 'create').mockResolvedValue(resolved);
+        const actual = await service.followUser(userId, data);
 
-        expect(actual).toBe(expected);
-        expect(followService.followUser).toHaveBeenCalledTimes(1);
+        expect(actual).toStrictEqual(expected);
+        expect(prismaService.follow.create).toHaveBeenCalledTimes(1);
       });
     });
   });
 
-  describe('DELETE  /follow/:id unfollowUser', () => {
+  describe('unfollowUser', () => {
     describe('valid id is provided', () => {
       it('should delete the follow and return success message', async () => {
         const currentUser = 2;
         const userToUnfollow = 1;
+        const resolved = {
+          id: expect.any(Number),
+          followingId: userToUnfollow,
+          followerId: currentUser,
+        };
+
         const expected = {
           msg: 'User unfollowed successfully',
         };
 
-        jest.spyOn(followService, 'unfollowUser').mockResolvedValue(expected);
-        const actual = await controller.unfollowUser(
-          currentUser,
-          userToUnfollow,
-        );
+        jest.spyOn(service, 'findFollowId').mockResolvedValue(1);
+        jest.spyOn(prismaService.follow, 'delete').mockResolvedValue(resolved);
 
-        expect(actual).toBe(expected);
-        expect(followService.unfollowUser).toHaveBeenCalledTimes(1);
+        const actual = await service.unfollowUser(currentUser, userToUnfollow);
+
+        expect(actual).toStrictEqual(expected);
+        expect(prismaService.follow.delete).toHaveBeenCalledTimes(1);
       });
     });
   });
