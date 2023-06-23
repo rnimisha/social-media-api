@@ -17,8 +17,10 @@ import { CreatePostDto } from './dto';
 import { getCurrentUserId } from '../common/decorator';
 import { CreatePostResType } from './types';
 import { PostType } from './types/post.types';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('post')
+@ApiTags('Post')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 

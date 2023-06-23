@@ -15,8 +15,10 @@ import { ProfileType, UpdateProfileType } from './types';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ProfileImageInterceptorOptions } from '../post/interceptor';
 import { extractProfileImg } from '../common/helper';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('profile/:user')
+@ApiTags('Profile')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
