@@ -35,7 +35,6 @@ export class AuthController {
   @ApiSecurity('JWT-access')
   @Post('logout')
   logout(@getCurrentUserId() userId: number) {
-    console.log(userId);
     return this.authService.logout(userId);
   }
 

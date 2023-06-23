@@ -14,7 +14,6 @@ export class FeedController {
   getFeedPost(
     @getCurrentUser('username') username: string,
   ): Promise<PostType[]> {
-    console.log(username);
     return this.feedService.getFeedPost(username);
   }
 }

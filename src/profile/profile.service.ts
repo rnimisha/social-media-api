@@ -85,7 +85,6 @@ export class ProfileService {
         },
       },
     });
-    console.log(user);
 
     if (!user) throw new NotFoundException('User not found');
 

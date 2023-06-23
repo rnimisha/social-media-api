@@ -1,73 +1,98 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# Social Media App API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project provides a RESTful API for social media application for managing post, profile, likes, comments and followings.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Features
 
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- User authentication and authorization using JWT
+- CRUD operations for managing posts.
+- Like and comment for post.
+- Follow and unfollow user.
+- Feed based on followings.
+- Database integration with PostgreSQL and prisma.
+- Unit testing using Jest.
+- API endpoints documented with swagger.
 
 ## Installation
 
+Clone the repository
+
 ```bash
-$ npm install
+    git clone https://github.com/rnimisha/social-media-api.git
 ```
 
-## Running the app
+Install the project dependencies
 
 ```bash
-# development
-$ npm run start
+  cd social-media-api
+  npm install
+```
 
-# watch mode
-$ npm run start:dev
+Configure .env file
 
-# production mode
-$ npm run start:prod
+```bash
+POSTGRES_USER=YOUR_POSTGRES_USER
+POSTGRES_PASSWORD=YOUR_POSTGRES_PASSWORD
+POSTGRES_DB=YOUR_POSTGRES_DB
+
+PGADMIN_DEFAULT_EMAIL=YOUR_PGADMIN_DEFAULT_EMAIL
+PGADMIN_DEFAULT_PASSWORD=YOUR_PGADMIN_DEFAULT_PASSWORD
+
+ACCESS_SECRET=SECRETKEY_FOR_ACCESSTOKEN
+REFRESH_SECRET=SECRETKEY_FOR_REFRESHTOKEN
+
+DATABASE_URL="postgresql://YOUR_POSTGRES_USER:YOUR_POSTGRES_PASSWORD@localhost:5434/YOUR_POSTGRES_DB?schema=public"
+
+```
+
+Start docker containers
+
+```bash
+  docker compose up -d
+```
+
+Run database migration
+
+```bash
+  npx prisma migrate dev
+```
+
+Run database migration
+
+```bash
+  npx prisma migrate dev
+```
+
+Build and run the project
+
+```bash
+  npm run Build
+  npm start
 ```
 
 ## Test
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+  npm test
 ```
 
-## Support
+## API documentation:
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+`http://localhost:3000/api` to access the Swagger API documentation.
 
-## Stay in touch
+## Swagger Documentation
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+![Sqagger UI](https://raw.githubusercontent.com/rnimisha/resturant-app/main/src/common/demo/apidemo.gif)
 
-## License
+## Upcoming Features
 
-Nest is [MIT licensed](LICENSE).
+- Chat system
+
+## Tech Stack
+
+- Node.js
+- Nest.js
+- Prisma
+- PostgreSQL
+- Jest
+- Docker
