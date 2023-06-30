@@ -82,7 +82,7 @@ Build and run the project
 
 ## Swagger Documentation
 
-![Sqagger UI](https://raw.githubusercontent.com/rnimisha/resturant-app/main/src/common/demo/apidemo.gif)
+![Sqagger UI](https://raw.githubusercontent.com/rnimisha/social-media-api/main/src/common/demo/apidemo.gif)
 
 ## Upcoming Features
 

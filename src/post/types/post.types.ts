@@ -1,3 +1,4 @@
+import { CommentByType } from 'src/comment/types';
 import { PostImageType } from './post-image.types';
 
 type LikeType = {
@@ -14,6 +15,12 @@ type CommentType = {
   createdAt: Date;
 };
 
+export type AuthorType = {
+  name: string;
+  username: string;
+  profilePic: string;
+};
+
 export type PostType = {
   id: number;
   description: string;
@@ -22,4 +29,6 @@ export type PostType = {
   images: PostImageType[];
   likes: LikeType[];
   comments: CommentType[];
+  author?: AuthorType;
+  commentBy?: CommentByType[];
 };

@@ -17,6 +17,15 @@ export class CommentService {
       where: {
         postId: postId,
       },
+      include: {
+        commentBy: {
+          select: {
+            name: true,
+            username: true,
+            profilePic: true,
+          },
+        },
+      },
     });
     return comments;
   }

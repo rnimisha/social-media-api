@@ -72,7 +72,7 @@ export class AuthService {
     const tokens = await this.generateToken(user.id, user.email, user.username);
     await this.storeHashedRT(user.id, tokens.refresh_token);
 
-    return tokens;
+    return { username: user.username, ...tokens };
   }
 
   //------------------logout---------------------------------

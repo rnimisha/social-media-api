@@ -83,7 +83,7 @@ describe('PostService', () => {
 
         const acutal = await service.getPostByPostId(postId);
 
-        expect(acutal).toBe(expected);
+        expect(acutal).toStrictEqual(expected);
         expect(prismaService.post.findFirst).toHaveBeenCalledTimes(1);
       });
     });

@@ -30,12 +30,45 @@ export class PostService {
       include: {
         images: true,
         likes: true,
-        comments: true,
+        comments: {
+          select: {
+            id: true,
+            description: true,
+            createdAt: true,
+            userId: true,
+            postId: true,
+            commentBy: {
+              select: {
+                name: true,
+                username: true,
+                profilePic: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: 'desc',
+          },
+        },
+        author: {
+          select: {
+            name: true,
+            username: true,
+            profilePic: true,
+          },
+        },
       },
     });
 
     if (!post) throw new NotFoundException('Post not found');
-    return post;
+
+    const withImg = {
+      ...post,
+      images: post.images.map((image) => ({
+        ...image,
+        basename: `./uploads/posts/${image.basename}`,
+      })),
+    };
+    return withImg;
   }
 
   //----------------- Create New Post--------------------------
@@ -97,6 +130,16 @@ export class PostService {
         images: true,
         likes: true,
         comments: true,
+        author: {
+          select: {
+            name: true,
+            username: true,
+            profilePic: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 

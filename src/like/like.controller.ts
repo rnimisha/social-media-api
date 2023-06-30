@@ -25,7 +25,7 @@ export class LikeController {
     return this.likeService.likePost(userId, data);
   }
 
-  @Delete()
+  @Post('unlike')
   @ApiNotFoundResponse({ description: 'Post not found' })
   @ApiBadRequestResponse({ description: 'Post is not liked yet.' })
   unlikePost(
