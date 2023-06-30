@@ -59,6 +59,7 @@ describe('AuthController', () => {
         const expected = {
           access_token: expect.any(String),
           refresh_token: expect.any(String),
+          username: expect.any(String),
         };
 
         jest.spyOn(authService, 'login').mockResolvedValue(expected);

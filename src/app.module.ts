@@ -13,6 +13,7 @@ import { join } from 'path';
 import { FollowModule } from './follow/follow.module';
 import { FeedModule } from './feed/feed.module';
 import { ProfileModule } from './profile/profile.module';
+import { ChatModule } from './chat/chat.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ProfileModule } from './profile/profile.module';
     FollowModule,
     FeedModule,
     ProfileModule,
+    ChatModule,
   ],
   providers: [
     {
