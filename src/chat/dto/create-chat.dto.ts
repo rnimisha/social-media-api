@@ -1,3 +1,8 @@
+import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
+
 export class CreateChatDto {
-  message: string;
+  @IsNotEmpty()
+  @IsArray()
+  @IsNumber({}, { each: true })
+  participants: number[];
 }
