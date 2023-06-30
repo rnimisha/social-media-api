@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateChatDto, CreateMessageDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 
@@ -27,14 +31,42 @@ export class ChatService {
     return chat;
   }
 
-  createMessage(createChatDto: CreateMessageDto) {
-    const message = { ...createChatDto };
-    // do
+  async createMessage(createChatDto: CreateMessageDto) {
+    const { chatId, content, senderId } = createChatDto;
+    const chatExists = await this.checkChatExists(chatId);
+
+    if (!chatExists) throw new NotFoundException('Chat does not exist');
+
+    const message = await this.prisma.message.create({
+      data: {
+        content: content,
+        senderId: senderId,
+        chatId: chatId,
+      },
+    });
+
     return message;
   }
 
-  findAll() {
-    return `This action returns all chat`;
+  async findChatByChatId(chatId: number) {
+    const chat = await this.prisma.chat.findFirst({
+      where: {
+        id: chatId,
+      },
+      include: {
+        participants: {
+          select: {
+            username: true,
+            name: true,
+            id: true,
+            profilePic: true,
+          },
+        },
+        messages: true,
+      },
+    });
+
+    return chat;
   }
 
   join() {
@@ -45,6 +77,7 @@ export class ChatService {
     return `This action returns all chat`;
   }
 
+  //---------- helpers----------------------
   async findParticipantChat(participants: number[]) {
     const chat = await this.prisma.chat.findFirst({
       where: {
@@ -71,5 +104,14 @@ export class ChatService {
     }
 
     return chat;
+  }
+
+  async checkChatExists(chatId: number): Promise<boolean> {
+    const chat = await this.prisma.chat.findFirst({
+      where: {
+        id: chatId,
+      },
+    });
+    return chat ? true : false;
   }
 }

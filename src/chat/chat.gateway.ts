@@ -6,10 +6,12 @@ import {
   OnGatewayConnection,
   OnGatewayDisconnect,
   OnGatewayInit,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
+
 import { Server, Socket } from 'socket.io';
+import { CreateMessageDto } from './dto';
 
 @WebSocketGateway({
   cors: '*',
@@ -21,17 +23,21 @@ export class ChatGateway
   server: Server;
   constructor(private readonly chatService: ChatService) {}
 
-  @SubscribeMessage('createChat')
-  async create(@MessageBody() createChatDto: CreateChatDto) {
-    console.log(createChatDto);
-    const message = await this.chatService.create(createChatDto);
-    this.server.emit('message', message);
+  @SubscribeMessage('createMessage')
+  async createMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() createMessageDto: CreateMessageDto,
+  ) {
+    console.log(createMessageDto);
+    const message = await this.chatService.createMessage(createMessageDto);
+    this.server.emit('receiveMessage', message);
     return message;
   }
 
   @SubscribeMessage('findAllChat')
-  findAll() {
-    return this.chatService.findAll();
+  findChatByChatId(@MessageBody('chatId') chatId: number) {
+    console.log({ chatId });
+    return this.chatService.findChatByChatId(chatId);
   }
 
   @SubscribeMessage('join')
