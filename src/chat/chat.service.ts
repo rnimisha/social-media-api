@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { CreateChatDto, CreateMessageDto } from './dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { ChatType } from './types';
 
 @Injectable()
 export class ChatService {
@@ -24,7 +25,14 @@ export class ChatService {
         },
       },
       include: {
-        participants: true,
+        participants: {
+          select: {
+            username: true,
+            name: true,
+            id: true,
+            profilePic: true,
+          },
+        },
       },
     });
 
@@ -48,7 +56,7 @@ export class ChatService {
     return message;
   }
 
-  async findChatByChatId(chatId: number) {
+  async findChatByChatId(chatId: number): Promise<ChatType> {
     const chat = await this.prisma.chat.findFirst({
       where: {
         id: chatId,
@@ -63,6 +71,34 @@ export class ChatService {
           },
         },
         messages: true,
+      },
+    });
+
+    return chat;
+  }
+
+  async findAllUserChat(userId: number): Promise<ChatType[]> {
+    const chat = await this.prisma.chat.findMany({
+      where: {
+        participants: {
+          some: { id: userId },
+        },
+      },
+      include: {
+        participants: {
+          select: {
+            username: true,
+            name: true,
+            id: true,
+            profilePic: true,
+          },
+        },
+        messages: {
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
+        },
       },
     });
 

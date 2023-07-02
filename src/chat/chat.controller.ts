@@ -1,0 +1,35 @@
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+} from '@nestjs/common';
+import { ChatService } from './chat.service';
+import { getCurrentUserId } from 'src/common/decorator';
+import { CreateChatDto } from './dto';
+import { ChatType } from './types';
+
+@Controller('chat')
+export class ChatController {
+  constructor(private chatService: ChatService) {}
+
+  @Get('chat/:chatId')
+  findChatByChatId(
+    @Param('chatId', ParseIntPipe) chatId: number,
+  ): Promise<ChatType> {
+    return this.chatService.findChatByChatId(chatId);
+  }
+
+  @Get('user')
+  findAllUserChat(@getCurrentUserId() userId: number): Promise<ChatType[]> {
+    return this.chatService.findAllUserChat(userId);
+  }
+
+  @Post('')
+  createChat(@Body() data: CreateChatDto) {
+    console.log(data);
+    return this.chatService.createChat(data);
+  }
+}

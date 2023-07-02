@@ -28,16 +28,9 @@ export class ChatGateway
     @ConnectedSocket() client: Socket,
     @MessageBody() createMessageDto: CreateMessageDto,
   ) {
-    console.log(createMessageDto);
     const message = await this.chatService.createMessage(createMessageDto);
     this.server.emit('receiveMessage', message);
     return message;
-  }
-
-  @SubscribeMessage('findAllChat')
-  findChatByChatId(@MessageBody('chatId') chatId: number) {
-    console.log({ chatId });
-    return this.chatService.findChatByChatId(chatId);
   }
 
   @SubscribeMessage('join')

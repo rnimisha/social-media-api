@@ -100,6 +100,7 @@ model Comment {
 model Chat {
   id        Int     @id @default(autoincrement())
   createdAt DateTime @default(now())
+  name String
 
   participants User[]
   messages    Message[]
