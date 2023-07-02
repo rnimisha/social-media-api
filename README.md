@@ -9,6 +9,7 @@ This project provides a RESTful API for social media application for managing po
 - Like and comment for post.
 - Follow and unfollow user.
 - Feed based on followings.
+- Real time chat with websocket.
 - Database integration with PostgreSQL and prisma.
 - Unit testing using Jest.
 - API endpoints documented with swagger.
@@ -83,10 +84,6 @@ Build and run the project
 ## Swagger Documentation
 
 ![Sqagger UI](https://raw.githubusercontent.com/rnimisha/social-media-api/main/src/common/demo/apidemo.gif)
-
-## Upcoming Features
-
-- Chat system
 
 ## Tech Stack
 
