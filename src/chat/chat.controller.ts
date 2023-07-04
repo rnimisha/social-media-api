@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ChatService } from './chat.service';
 import { getCurrentUserId } from 'src/common/decorator';
@@ -25,6 +26,16 @@ export class ChatController {
   @Get('user')
   findAllUserChat(@getCurrentUserId() userId: number): Promise<ChatType[]> {
     return this.chatService.findAllUserChat(userId);
+  }
+
+  @Get('userchat')
+  getChatBetweenUsers(
+    @getCurrentUserId() userId: number,
+    @Body() data: CreateChatDto,
+  ): Promise<{ id: number }> {
+    if (!data.participants.includes(userId))
+      throw new UnauthorizedException('Cannot access the messages');
+    return this.chatService.getChatBetweenUsers(data);
   }
 
   @Post('')

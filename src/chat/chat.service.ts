@@ -105,6 +105,17 @@ export class ChatService {
     return chat;
   }
 
+  async getChatBetweenUsers(createChatDto: CreateChatDto): Promise<{
+    id: number;
+  }> {
+    const chat = await this.findParticipantChat(createChatDto.participants);
+    if (chat) return { id: chat.id };
+
+    const newChat = await this.createChat(createChatDto);
+
+    return { id: newChat.id };
+  }
+
   join() {
     return `This action returns all chat`;
   }
