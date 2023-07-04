@@ -10,7 +10,7 @@ import {
 import { FollowService } from './follow.service';
 import { getCurrentUserId } from '../common/decorator';
 import { FollowReqDto } from './dto';
-import { FollowerType, FollowingType } from './types';
+import { FollowUserType, FollowerType, FollowingType } from './types';
 import { ApiSecurity, ApiTags } from '@nestjs/swagger';
 
 @Controller('follow')
@@ -31,6 +31,13 @@ export class FollowController {
     @Param('username') username: string,
   ): Promise<FollowerType[]> {
     return this.followService.getAllFollowers(username);
+  }
+
+  @Get('usertofollow')
+  getUserToFollow(
+    @getCurrentUserId() userId: number,
+  ): Promise<FollowUserType[]> {
+    return this.followService.getUserToFollow(userId);
   }
 
   @Post()

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { FollowerType, FollowingType } from './types';
+import { FollowUserType, FollowerType, FollowingType } from './types';
 import { FollowReqDto } from './dto';
 
 @Injectable()
@@ -83,6 +83,29 @@ export class FollowService {
       },
     });
     return { msg: 'User unfollowed successfully' };
+  }
+
+  async getUserToFollow(userId: number): Promise<FollowUserType[]> {
+    const users = await this.prisma.user.findMany({
+      where: {
+        NOT: {
+          followings: {
+            some: {
+              followerId: userId,
+            },
+          },
+        },
+      },
+      take: 5,
+      select: {
+        id: true,
+        username: true,
+        profilePic: true,
+        name: true,
+      },
+    });
+
+    return users;
   }
 
   //--------------helper-------------------------------

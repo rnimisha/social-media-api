@@ -28,7 +28,7 @@ export class ChatController {
     return this.chatService.findAllUserChat(userId);
   }
 
-  @Get('userchat')
+  @Post('userchat')
   getChatBetweenUsers(
     @getCurrentUserId() userId: number,
     @Body() data: CreateChatDto,
