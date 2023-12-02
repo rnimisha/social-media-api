@@ -18,12 +18,15 @@ export class ChatService {
 
     if (chatExists) throw new BadRequestException('Chat already exists');
 
-    const chat = await this.prisma.chat.create({
-      data: {
-        participants: {
-          connect: createChatDto.participants.map((userId) => ({ id: userId })),
-        },
+    const chatData = {
+      name: 'mychat',
+      participants: {
+        connect: createChatDto.participants.map((userId) => ({ id: userId })),
       },
+    };
+
+    const chat = await this.prisma.chat.create({
+      data: chatData,
       include: {
         participants: {
           select: {
