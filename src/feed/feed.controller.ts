@@ -1,4 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import {
+  Controller,
+  DefaultValuePipe,
+  Get,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 import { FeedService } from './feed.service';
 import { getCurrentUser } from '../common/decorator';
 import { PostType } from '../post/types/post.types';
@@ -13,7 +19,9 @@ export class FeedController {
   @Get()
   getFeedPost(
     @getCurrentUser('username') username: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('pageSize', new DefaultValuePipe(10), ParseIntPipe) pageSize: number,
   ): Promise<PostType[]> {
-    return this.feedService.getFeedPost(username);
+    return this.feedService.getFeedPost(username, page, pageSize);
   }
 }

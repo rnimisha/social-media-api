@@ -10,14 +10,19 @@ export class FeedService {
     private readonly postService: PostService,
   ) {}
 
-  async getFeedPost(username: string): Promise<PostType[]> {
+  async getFeedPost(
+    username: string,
+    page: number,
+    pageSize: number,
+  ): Promise<PostType[]> {
     const followedUsers = await this.followService.getFollowingUsernames(
       username,
     );
-    const feedPosts = await this.postService.getMultipleUserPost([
-      username,
-      ...followedUsers,
-    ]);
+    const feedPosts = await this.postService.getMultipleUserPost(
+      [username, ...followedUsers],
+      page,
+      pageSize,
+    );
     return feedPosts;
   }
 }

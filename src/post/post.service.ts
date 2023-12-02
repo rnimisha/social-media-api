@@ -116,7 +116,12 @@ export class PostService {
   }
 
   //------------- Get post of username in list--------------------
-  async getMultipleUserPost(username: string[]): Promise<PostType[]> {
+  async getMultipleUserPost(
+    username: string[],
+    page = 1,
+    pageSize = 10,
+  ): Promise<PostType[]> {
+    const skip = (page - 1) * pageSize;
     const posts = await this.prisma.post.findMany({
       where: {
         author: {
@@ -141,6 +146,8 @@ export class PostService {
       orderBy: {
         createdAt: 'desc',
       },
+      skip,
+      take: pageSize,
     });
 
     const postsWithImagePath = posts.map((post) => ({
