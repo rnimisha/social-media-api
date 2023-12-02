@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreatePostDto } from './dto';
 import { CreatePostResType } from './types';
@@ -121,6 +125,10 @@ export class PostService {
     page = 1,
     pageSize = 10,
   ): Promise<PostType[]> {
+    if (page <= 0) {
+      throw new BadRequestException('Page number should start from 1');
+    }
+
     const skip = (page - 1) * pageSize;
     const posts = await this.prisma.post.findMany({
       where: {
