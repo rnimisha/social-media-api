@@ -33,6 +33,8 @@ services:
     restart: always
     depends_on:
       - db
+    volumes:
+      - ./uploads:/usr/src/app/uploads
 
 volumes:
   postgres_data:
