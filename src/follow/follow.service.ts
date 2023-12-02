@@ -88,13 +88,18 @@ export class FollowService {
   async getUserToFollow(userId: number): Promise<FollowUserType[]> {
     const users = await this.prisma.user.findMany({
       where: {
-        NOT: {
-          followings: {
-            some: {
-              followerId: userId,
+        NOT: [
+          {
+            id: userId,
+          },
+          {
+            followings: {
+              some: {
+                followerId: userId,
+              },
             },
           },
-        },
+        ],
       },
       take: 5,
       select: {
