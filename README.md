@@ -1,6 +1,7 @@
 # Social Media App API
 
 This project provides a RESTful API for social media application for managing post, profile, likes, comments and followings.
+Frontend with the API is build in [repo here](https://github.com/rnimisha/social-media-client).
 
 ## Features
 
@@ -26,58 +27,21 @@ Install the project dependencies
 
 ```bash
   cd social-media-api
-  npm install
 ```
 
-Configure .env file
+Rename .env.example to .env and configure values
 
 ```bash
-POSTGRES_USER=YOUR_POSTGRES_USER
-POSTGRES_PASSWORD=YOUR_POSTGRES_PASSWORD
-POSTGRES_DB=YOUR_POSTGRES_DB
-
-PGADMIN_DEFAULT_EMAIL=YOUR_PGADMIN_DEFAULT_EMAIL
-PGADMIN_DEFAULT_PASSWORD=YOUR_PGADMIN_DEFAULT_PASSWORD
-
-ACCESS_SECRET=SECRETKEY_FOR_ACCESSTOKEN
-REFRESH_SECRET=SECRETKEY_FOR_REFRESHTOKEN
-
-DATABASE_URL="postgresql://YOUR_POSTGRES_USER:YOUR_POSTGRES_PASSWORD@localhost:5434/YOUR_POSTGRES_DB?schema=public"
-
+cp .env.example .env
 ```
 
-Start docker containers
+Build image and start docker containers
 
 ```bash
-  docker compose up -d
+  docker compose up --build -d
 ```
 
-Run database migration
-
-```bash
-  npx prisma migrate dev
-```
-
-Run database migration
-
-```bash
-  npx prisma migrate dev
-```
-
-Build and run the project
-
-```bash
-  npm run Build
-  npm start
-```
-
-## Test
-
-```bash
-  npm test
-```
-
-## API documentation:
+## API documentation locally:
 
 `http://localhost:3000/api` to access the Swagger API documentation.
 
